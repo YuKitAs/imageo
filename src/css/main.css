@@ -1,0 +1,26 @@
+:root {
+  --color1: rgba(78, 83, 64, 1);
+  --color2: rgba(105, 114, 104, 1);
+  --color3: rgba(149, 163, 164, 1);
+  --color4: rgba(183, 209, 218, 1);
+  --color5: rgba(226, 232, 221, 1);
+  --lod-text-color: var(--color5);
+  --lod-bg-color: var(--color1);
+  --lod-bg-color-highlight: var(--color3);
+  --dol-text-color: var(--color1);
+  --dol-bg-color: var(--color5);
+}
+
+body {
+  position: absolute;
+  margin: 0;
+  border: 0;
+  width: 100vw;
+  height: 100vh;
+  padding: 0;
+  overflow: hidden;
+  color: var(--dol-text-color);
+  background-color: var(--dol-bg-color);
+  font-family: 'Roboto Mono', monospace;
+  font-weight: 300;
+}

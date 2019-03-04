@@ -1,0 +1,35 @@
+{
+  "name": "imageo",
+  "version": "0.0.1",
+  "description": "Use an image as the map for navigation",
+  "browser": "dist/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "scripts/lint.sh",
+    "build": "scripts/build.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xiGUAwanOU/imageo.git"
+  },
+  "author": "xiGUAwanOU",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/xiGUAwanOU/imageo/issues"
+  },
+  "homepage": "https://xiguawanou.github.io/imageo/dist/index.html",
+  "devDependencies": {
+    "autoprefixer": "^9.4.9",
+    "browserify": "^16.2.3",
+    "eslint": "^5.15.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "postcss": "^7.0.14",
+    "postcss-cli": "^6.1.2",
+    "stylelint": "^9.10.1",
+    "stylelint-config-standard": "^18.2.0"
+  }
+}
