@@ -11,14 +11,19 @@
   --dol-bg-color: var(--color5);
 }
 
-body {
+.full-screen {
   position: absolute;
+  top: 0;
+  left: 0;
   margin: 0;
   border: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   padding: 0;
   overflow: hidden;
+}
+
+body {
   color: var(--dol-text-color);
   background-color: var(--dol-bg-color);
   font-family: 'Roboto Mono', monospace;
@@ -27,8 +32,6 @@ body {
 
 .file-selection-view {
   display: flex;
-  width: 100%;
-  height: 100%;
   flex-flow: column;
   justify-content: center;
   align-items: center;
@@ -43,17 +46,8 @@ body {
 }
 
 .file-selection-input {
-  position: absolute;
-  width: 100%;
-  height: 100%;
   opacity: 0;
   cursor: pointer;
-}
-
-.navigation-view-layer {
-  position: absolute;
-  width: 100%;
-  height: 100%;
 }
 
 .navigation-tool-box {
