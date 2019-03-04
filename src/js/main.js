@@ -2,14 +2,8 @@ require('./polyfill')
 const loader = require('./loader')
 
 const scripts = [
-  {
-    doms: { body: 'body' },
-    data: { message: { mutable: true } },
-    init (g) {
-      g.data.message = 'hello vanilla js'
-      g.doms.body.innerText = g.data.message
-    }
-  }
+  require('./scripts/file-loading'),
+  require('./scripts/view-switching')
 ]
 
 const globalData = {

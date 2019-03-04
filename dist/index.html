@@ -11,6 +11,18 @@
 </head>
 
 <body>
+  <div id="file-selection-view" class="file-selection-view">
+    <svg class="file-selection-icon" width="150" height="150" viewBox="0 0 200 200">
+      <circle cx="70" cy="70" r="60" stroke="var(--dol-text-color)" stroke-width="20" fill="none" />
+      <circle cx="133" cy="133" r="10" fill="var(--dol-text-color)" />
+      <line x1="153" y1="153" x2="190" y2="190" stroke="var(--dol-text-color)" stroke-width="20"
+        stroke-linecap="round" />
+    </svg>
+    <div class="file-selection-prompt">Tap to select an image</div>
+    <input id="file-selection-input" class="file-selection-input" type="file" accept="image/*" />
+  </div>
+
+  <div id="navigation-view" class="navigation-view"></div>
 </body>
 
 </html>

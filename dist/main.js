@@ -44,14 +44,8 @@ require('./polyfill')
 const loader = require('./loader')
 
 const scripts = [
-  {
-    doms: { body: 'body' },
-    data: { message: { mutable: true } },
-    init (g) {
-      g.data.message = 'hello vanilla js'
-      g.doms.body.innerText = g.data.message
-    }
-  }
+  require('./scripts/file-loading'),
+  require('./scripts/view-switching')
 ]
 
 const globalData = {
@@ -66,7 +60,7 @@ if (document.readyState === 'loading') {
   loader.load(scripts, globalData, eventBus)
 }
 
-},{"./loader":1,"./polyfill":3}],3:[function(require,module,exports){
+},{"./loader":1,"./polyfill":3,"./scripts/file-loading":4,"./scripts/view-switching":5}],3:[function(require,module,exports){
 function polyfillCustomEvent () {
   if (typeof window.CustomEvent === 'function') return false
 
@@ -100,5 +94,67 @@ function polyfillEventTarget () {
 
 polyfillCustomEvent()
 polyfillEventTarget()
+
+},{}],4:[function(require,module,exports){
+const eventType = require('../utilities/event-type')
+
+module.exports = {
+  doms: {
+    fileSelectionInput: '#file-selection-input'
+  },
+
+  data: {},
+
+  init (g) {
+    g.doms.fileSelectionInput.addEventListener('input', () => onFileSelect(g))
+    g.doms.fileSelectionInput.addEventListener('change', () => onFileSelect(g))
+  }
+}
+
+async function onFileSelect (g) {
+  const image = await loadImage(await loadFile(g.doms.fileSelectionInput.files[0]))
+  g.eventBus.dispatchEvent(new CustomEvent(eventType.FILE_LOADED, { detail: { image } }))
+}
+
+function loadFile (file) {
+  return new Promise(resolve => {
+    const reader = new FileReader()
+    reader.onload = event => resolve(event.target.result)
+    reader.readAsDataURL(file)
+  })
+}
+
+function loadImage (imageDataUrl) {
+  return new Promise(resolve => {
+    const image = new Image()
+    image.src = imageDataUrl
+    image.addEventListener('load', () => resolve(image))
+  })
+}
+
+},{"../utilities/event-type":6}],5:[function(require,module,exports){
+const eventType = require('../utilities/event-type')
+
+module.exports = {
+  doms: {
+    fileSelectionView: '#file-selection-view',
+    navigationView: '#navigation-view' },
+
+  data: {},
+
+  init (g) {
+    g.doms.navigationView.style.display = 'none'
+
+    g.eventBus.addEventListener(eventType.FILE_LOADED, () => {
+      g.doms.fileSelectionView.style.display = 'none'
+      g.doms.navigationView.style.display = 'block'
+    })
+  }
+}
+
+},{"../utilities/event-type":6}],6:[function(require,module,exports){
+module.exports = {
+  FILE_LOADED: 'fileLoaded'
+}
 
 },{}]},{},[2]);
