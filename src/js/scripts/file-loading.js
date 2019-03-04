@@ -2,20 +2,22 @@ const eventType = require('../utilities/event-type')
 
 module.exports = {
   doms: {
-    fileSelectionInput: '#file-selection-input'
+    fileSelectionInput: '#file-selection-input',
+    mapImageLayer: '#navigation-map-image-layer'
   },
 
   data: {},
 
   init (g) {
-    g.doms.fileSelectionInput.addEventListener('input', () => onFileSelect(g))
-    g.doms.fileSelectionInput.addEventListener('change', () => onFileSelect(g))
+    g.doms.fileSelectionInput
+      .addEventListener('change', event => onFileSelect(g, event), { once: true })
   }
 }
 
 async function onFileSelect (g) {
-  const image = await loadImage(await loadFile(g.doms.fileSelectionInput.files[0]))
-  g.eventBus.dispatchEvent(new CustomEvent(eventType.FILE_LOADED, { detail: { image } }))
+  const imgDom = createImgDom(await loadFile(g.doms.fileSelectionInput.files[0]))
+  g.doms.mapImageLayer.appendChild(imgDom)
+  g.eventBus.dispatchEvent(new CustomEvent(eventType.FILE_LOADED))
 }
 
 function loadFile (file) {
@@ -26,10 +28,8 @@ function loadFile (file) {
   })
 }
 
-function loadImage (imageDataUrl) {
-  return new Promise(resolve => {
-    const image = new Image()
-    image.src = imageDataUrl
-    image.addEventListener('load', () => resolve(image))
-  })
+function createImgDom (imageDataUrl) {
+  const img = document.createElement('img')
+  img.src = imageDataUrl
+  return img
 }

@@ -10,15 +10,9 @@ function loadOne (script, globalData, eventBus) {
   }
 
   function addData (localData, name, mutable) {
+    localData[name] = { getValue () { return JSON.parse(JSON.stringify(globalData[name])) } }
     if (mutable) {
-      Object.defineProperty(localData, name, {
-        get () { return JSON.parse(JSON.stringify(globalData[name])) },
-        set (value) { globalData[name] = value }
-      })
-    } else {
-      Object.defineProperty(localData, name, {
-        get () { return JSON.parse(JSON.stringify(globalData[name])) }
-      })
+      localData[name] = { setValue (value) { globalData[name] = value } }
     }
   }
 
@@ -53,7 +47,10 @@ const scripts = [
 ]
 
 const globalData = {
-  message: 'hello world'
+  currentPosition: {
+    latitude: 0,
+    longitude: 0
+  }
 }
 
 const eventBus = new EventTarget()
@@ -122,20 +119,22 @@ const eventType = require('../utilities/event-type')
 
 module.exports = {
   doms: {
-    fileSelectionInput: '#file-selection-input'
+    fileSelectionInput: '#file-selection-input',
+    mapImageLayer: '#navigation-map-image-layer'
   },
 
   data: {},
 
   init (g) {
-    g.doms.fileSelectionInput.addEventListener('input', () => onFileSelect(g))
-    g.doms.fileSelectionInput.addEventListener('change', () => onFileSelect(g))
+    g.doms.fileSelectionInput
+      .addEventListener('change', event => onFileSelect(g, event), { once: true })
   }
 }
 
 async function onFileSelect (g) {
-  const image = await loadImage(await loadFile(g.doms.fileSelectionInput.files[0]))
-  g.eventBus.dispatchEvent(new CustomEvent(eventType.FILE_LOADED, { detail: { image } }))
+  const imgDom = createImgDom(await loadFile(g.doms.fileSelectionInput.files[0]))
+  g.doms.mapImageLayer.appendChild(imgDom)
+  g.eventBus.dispatchEvent(new CustomEvent(eventType.FILE_LOADED))
 }
 
 function loadFile (file) {
@@ -146,12 +145,10 @@ function loadFile (file) {
   })
 }
 
-function loadImage (imageDataUrl) {
-  return new Promise(resolve => {
-    const image = new Image()
-    image.src = imageDataUrl
-    image.addEventListener('load', () => resolve(image))
-  })
+function createImgDom (imageDataUrl) {
+  const img = document.createElement('img')
+  img.src = imageDataUrl
+  return img
 }
 
 },{"../utilities/event-type":8}],6:[function(require,module,exports){
@@ -171,7 +168,7 @@ module.exports = {
         latitude: position.coords.latitude,
         longitude: position.coords.longitude
       }
-      g.data.currentPosition = currentPosition
+      g.data.currentPosition.setValue(currentPosition)
       g.eventBus.dispatchEvent(
         new CustomEvent(
           eventType.LOCATION_UPDATED,

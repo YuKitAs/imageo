@@ -9,15 +9,9 @@ function loadOne (script, globalData, eventBus) {
   }
 
   function addData (localData, name, mutable) {
+    localData[name] = { getValue () { return JSON.parse(JSON.stringify(globalData[name])) } }
     if (mutable) {
-      Object.defineProperty(localData, name, {
-        get () { return JSON.parse(JSON.stringify(globalData[name])) },
-        set (value) { globalData[name] = value }
-      })
-    } else {
-      Object.defineProperty(localData, name, {
-        get () { return JSON.parse(JSON.stringify(globalData[name])) }
-      })
+      localData[name] = { setValue (value) { globalData[name] = value } }
     }
   }
 

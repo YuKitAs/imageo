@@ -9,7 +9,10 @@ const scripts = [
 ]
 
 const globalData = {
-  message: 'hello world'
+  currentPosition: {
+    latitude: 0,
+    longitude: 0
+  }
 }
 
 const eventBus = new EventTarget()

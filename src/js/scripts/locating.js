@@ -14,7 +14,7 @@ module.exports = {
         latitude: position.coords.latitude,
         longitude: position.coords.longitude
       }
-      g.data.currentPosition = currentPosition
+      g.data.currentPosition.setValue(currentPosition)
       g.eventBus.dispatchEvent(
         new CustomEvent(
           eventType.LOCATION_UPDATED,
