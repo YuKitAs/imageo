@@ -11,11 +11,13 @@ function loadOne (script, globalData, eventBus) {
   function addData (localData, name, mutable) {
     if (mutable) {
       Object.defineProperty(localData, name, {
-        get () { return globalData[name] },
+        get () { return JSON.parse(JSON.stringify(globalData[name])) },
         set (value) { globalData[name] = value }
       })
     } else {
-      Object.defineProperty(localData, name, { get () { return globalData[name] } })
+      Object.defineProperty(localData, name, {
+        get () { return JSON.parse(JSON.stringify(globalData[name])) }
+      })
     }
   }
 

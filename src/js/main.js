@@ -2,7 +2,9 @@ require('./polyfill')
 const loader = require('./loader')
 
 const scripts = [
+  require('./scripts/current-location-displaying.js'),
   require('./scripts/file-loading'),
+  require('./scripts/locating'),
   require('./scripts/view-switching')
 ]
 

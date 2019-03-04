@@ -12,11 +12,13 @@ function loadOne (script, globalData, eventBus) {
   function addData (localData, name, mutable) {
     if (mutable) {
       Object.defineProperty(localData, name, {
-        get () { return globalData[name] },
+        get () { return JSON.parse(JSON.stringify(globalData[name])) },
         set (value) { globalData[name] = value }
       })
     } else {
-      Object.defineProperty(localData, name, { get () { return globalData[name] } })
+      Object.defineProperty(localData, name, {
+        get () { return JSON.parse(JSON.stringify(globalData[name])) }
+      })
     }
   }
 
@@ -44,7 +46,9 @@ require('./polyfill')
 const loader = require('./loader')
 
 const scripts = [
+  require('./scripts/current-location-displaying.js'),
   require('./scripts/file-loading'),
+  require('./scripts/locating'),
   require('./scripts/view-switching')
 ]
 
@@ -60,7 +64,7 @@ if (document.readyState === 'loading') {
   loader.load(scripts, globalData, eventBus)
 }
 
-},{"./loader":1,"./polyfill":3,"./scripts/file-loading":4,"./scripts/view-switching":5}],3:[function(require,module,exports){
+},{"./loader":1,"./polyfill":3,"./scripts/current-location-displaying.js":4,"./scripts/file-loading":5,"./scripts/locating":6,"./scripts/view-switching":7}],3:[function(require,module,exports){
 function polyfillCustomEvent () {
   if (typeof window.CustomEvent === 'function') return false
 
@@ -100,6 +104,24 @@ const eventType = require('../utilities/event-type')
 
 module.exports = {
   doms: {
+    currentLocationText: '#navigation-current-location'
+  },
+
+  data: {},
+
+  init (g) {
+    g.eventBus.addEventListener(eventType.LOCATION_UPDATED, event => {
+      g.doms.currentLocationText.innerText =
+        `${event.detail.latitude.toFixed(8)}, ${event.detail.longitude.toFixed(8)}`
+    })
+  }
+}
+
+},{"../utilities/event-type":8}],5:[function(require,module,exports){
+const eventType = require('../utilities/event-type')
+
+module.exports = {
+  doms: {
     fileSelectionInput: '#file-selection-input'
   },
 
@@ -132,7 +154,37 @@ function loadImage (imageDataUrl) {
   })
 }
 
-},{"../utilities/event-type":6}],5:[function(require,module,exports){
+},{"../utilities/event-type":8}],6:[function(require,module,exports){
+const eventType = require('../utilities/event-type')
+
+module.exports = {
+  doms: {},
+
+  data: {
+    currentPosition: { mutable: true }
+  },
+
+  init (g) {
+    const options = { enableHighAccuracy: true, timeout: 10000, maximumAge: 5000 }
+    navigator.geolocation.watchPosition(position => {
+      const currentPosition = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude
+      }
+      g.data.currentPosition = currentPosition
+      g.eventBus.dispatchEvent(
+        new CustomEvent(
+          eventType.LOCATION_UPDATED,
+          {
+            detail: currentPosition
+          }
+        )
+      )
+    }, null, options)
+  }
+}
+
+},{"../utilities/event-type":8}],7:[function(require,module,exports){
 const eventType = require('../utilities/event-type')
 
 module.exports = {
@@ -152,9 +204,10 @@ module.exports = {
   }
 }
 
-},{"../utilities/event-type":6}],6:[function(require,module,exports){
+},{"../utilities/event-type":8}],8:[function(require,module,exports){
 module.exports = {
-  FILE_LOADED: 'fileLoaded'
+  FILE_LOADED: 'fileLoaded',
+  LOCATION_UPDATED: 'locationUpdated'
 }
 
 },{}]},{},[2]);
