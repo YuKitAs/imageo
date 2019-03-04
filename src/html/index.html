@@ -10,8 +10,8 @@
   <script src="main.js" async></script>
 </head>
 
-<body class="full-screen">
-  <div id="file-selection-view" class="full-screen file-selection-view">
+<body class="container">
+  <div id="file-selection-view" class="container file-selection-view">
     <svg class="file-selection-icon" width="150" height="150" viewBox="0 0 200 200">
       <circle cx="70" cy="70" r="60" stroke="var(--dol-text-color)" stroke-width="20" fill="none" />
       <circle cx="133" cy="133" r="10" fill="var(--dol-text-color)" />
@@ -19,21 +19,24 @@
         stroke-linecap="round" />
     </svg>
     <div class="file-selection-prompt">Tap to select an image</div>
-    <input id="file-selection-input" class="full-screen file-selection-input" type="file" accept="image/*" />
+    <input id="file-selection-input" class="container file-selection-input" type="file"
+      accept="image/*" />
   </div>
 
-  <div id="navigation-view" class="full-screen navigation-view">
+  <div id="navigation-view" class="container navigation-view">
 
-    <div id="navigation-map-image-layer" class="full-screen navigation-map-image-layer">
+    <div id="navigation-transform-layer" class="layer navigation-transform-layer">
+      <div id="navigation-map-image-layer" class="layer navigation-map-image-layer">
+      </div>
+
+      <div class="layer navigation-map-marker-layer">
+      </div>
+
+      <div class="layer navigation-popup-layer">
+      </div>
     </div>
 
-    <div class="full-screen navigation-map-marker-layer">
-    </div>
-
-    <div class="full-screen navigation-popup-layer">
-    </div>
-
-    <div class="full-screen navigation-fixed-layer">
+    <div class="container navigation-fixed-layer">
       <div class="navigation-tool-box">
         <button id="navigation-add-pin-button" class="navigation-tool-button">
           <svg class="add-pin-icon" width="20" height="20" viewBox="0 0 200 200">

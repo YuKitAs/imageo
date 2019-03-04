@@ -11,7 +11,7 @@
   --dol-bg-color: var(--color5);
 }
 
-.full-screen {
+.container {
   position: absolute;
   top: 0;
   left: 0;
@@ -21,6 +21,17 @@
   height: 100%;
   padding: 0;
   overflow: hidden;
+}
+
+.layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
+  border: 0;
+  width: 0;
+  height: 0;
+  padding: 0;
 }
 
 body {
@@ -48,6 +59,10 @@ body {
 .file-selection-input {
   opacity: 0;
   cursor: pointer;
+}
+
+.navigation-map-image {
+  display: block;
 }
 
 .navigation-tool-box {

@@ -3,7 +3,8 @@ const eventType = require('../utilities/event-type')
 module.exports = {
   doms: {
     fileSelectionView: '#file-selection-view',
-    navigationView: '#navigation-view' },
+    navigationView: '#navigation-view'
+  },
 
   data: {},
 
@@ -13,6 +14,6 @@ module.exports = {
     g.eventBus.addEventListener(eventType.FILE_LOADED, () => {
       g.doms.fileSelectionView.style.display = 'none'
       g.doms.navigationView.style.display = 'block'
-    })
+    }, { once: true })
   }
 }

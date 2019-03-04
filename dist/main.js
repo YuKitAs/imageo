@@ -10,9 +10,10 @@ function loadOne (script, globalData, eventBus) {
   }
 
   function addData (localData, name, mutable) {
-    localData[name] = { getValue () { return JSON.parse(JSON.stringify(globalData[name])) } }
+    localData[name] = {}
+    localData[name].getValue = () => { return JSON.parse(JSON.stringify(globalData[name])) }
     if (mutable) {
-      localData[name] = { setValue (value) { globalData[name] = value } }
+      localData[name].setValue = value => { globalData[name] = value }
     }
   }
 
@@ -40,9 +41,10 @@ require('./polyfill')
 const loader = require('./loader')
 
 const scripts = [
-  require('./scripts/current-location-displaying.js'),
+  require('./scripts/current-location-displaying'),
   require('./scripts/file-loading'),
   require('./scripts/locating'),
+  require('./scripts/map-image-transformation'),
   require('./scripts/view-switching')
 ]
 
@@ -50,6 +52,21 @@ const globalData = {
   currentPosition: {
     latitude: 0,
     longitude: 0
+  },
+
+  viewport: {
+    width: 0,
+    height: 0
+  },
+
+  mapImage: {
+    width: 0,
+    height: 0
+  },
+
+  mapTransform: {
+    offset: { x: 0, y: 0 },
+    scale: 1
   }
 }
 
@@ -61,7 +78,7 @@ if (document.readyState === 'loading') {
   loader.load(scripts, globalData, eventBus)
 }
 
-},{"./loader":1,"./polyfill":3,"./scripts/current-location-displaying.js":4,"./scripts/file-loading":5,"./scripts/locating":6,"./scripts/view-switching":7}],3:[function(require,module,exports){
+},{"./loader":1,"./polyfill":3,"./scripts/current-location-displaying":4,"./scripts/file-loading":5,"./scripts/locating":6,"./scripts/map-image-transformation":7,"./scripts/view-switching":8}],3:[function(require,module,exports){
 function polyfillCustomEvent () {
   if (typeof window.CustomEvent === 'function') return false
 
@@ -114,7 +131,7 @@ module.exports = {
   }
 }
 
-},{"../utilities/event-type":8}],5:[function(require,module,exports){
+},{"../utilities/event-type":9}],5:[function(require,module,exports){
 const eventType = require('../utilities/event-type')
 
 module.exports = {
@@ -132,9 +149,12 @@ module.exports = {
 }
 
 async function onFileSelect (g) {
-  const imgDom = createImgDom(await loadFile(g.doms.fileSelectionInput.files[0]))
-  g.doms.mapImageLayer.appendChild(imgDom)
-  g.eventBus.dispatchEvent(new CustomEvent(eventType.FILE_LOADED))
+  const imageDataUrl = await loadFile(g.doms.fileSelectionInput.files[0])
+  const imageElement = await createImageElement(imageDataUrl)
+
+  g.eventBus
+    .dispatchEvent(new CustomEvent(eventType.FILE_LOADED, { detail: { image: imageElement } }))
+  g.doms.mapImageLayer.appendChild(imageElement)
 }
 
 function loadFile (file) {
@@ -145,13 +165,17 @@ function loadFile (file) {
   })
 }
 
-function createImgDom (imageDataUrl) {
-  const img = document.createElement('img')
-  img.src = imageDataUrl
-  return img
+function createImageElement (imageDataUrl) {
+  return new Promise(resolve => {
+    const imageElement = document.createElement('img')
+    imageElement.id = 'navigation-map-image'
+    imageElement.className = 'navigation-map-image'
+    imageElement.addEventListener('load', () => resolve(imageElement), { once: true })
+    imageElement.src = imageDataUrl
+  })
 }
 
-},{"../utilities/event-type":8}],6:[function(require,module,exports){
+},{"../utilities/event-type":9}],6:[function(require,module,exports){
 const eventType = require('../utilities/event-type')
 
 module.exports = {
@@ -181,13 +205,56 @@ module.exports = {
   }
 }
 
-},{"../utilities/event-type":8}],7:[function(require,module,exports){
+},{"../utilities/event-type":9}],7:[function(require,module,exports){
+const eventType = require('../utilities/event-type')
+
+module.exports = {
+  doms: {
+    body: 'body',
+    transformLayer: '#navigation-transform-layer'
+  },
+
+  data: {
+    viewport: { mutable: true },
+    mapImage: { mutable: true },
+    mapTransform: { mutable: true }
+  },
+
+  init (g) {
+    g.eventBus.addEventListener(
+      eventType.FILE_LOADED,
+      event => initializeTransform(g, event),
+      { once: true }
+    )
+  }
+}
+
+function initializeTransform (g, event) {
+  const viewport = g.data.viewport.getValue()
+  viewport.width = g.doms.body.clientWidth
+  viewport.height = g.doms.body.clientHeight
+  g.data.viewport.setValue(viewport)
+
+  const mapImage = g.data.mapImage.getValue()
+  mapImage.width = event.detail.image.width
+  mapImage.height = event.detail.image.height
+  g.data.mapImage.setValue(mapImage)
+
+  const mapTransform = g.data.mapTransform.getValue()
+  mapTransform.offset.x = 0
+  mapTransform.offset.y = 0
+  mapTransform.scale = 1
+  g.data.mapTransform.setValue(mapTransform)
+}
+
+},{"../utilities/event-type":9}],8:[function(require,module,exports){
 const eventType = require('../utilities/event-type')
 
 module.exports = {
   doms: {
     fileSelectionView: '#file-selection-view',
-    navigationView: '#navigation-view' },
+    navigationView: '#navigation-view'
+  },
 
   data: {},
 
@@ -197,11 +264,11 @@ module.exports = {
     g.eventBus.addEventListener(eventType.FILE_LOADED, () => {
       g.doms.fileSelectionView.style.display = 'none'
       g.doms.navigationView.style.display = 'block'
-    })
+    }, { once: true })
   }
 }
 
-},{"../utilities/event-type":8}],8:[function(require,module,exports){
+},{"../utilities/event-type":9}],9:[function(require,module,exports){
 module.exports = {
   FILE_LOADED: 'fileLoaded',
   LOCATION_UPDATED: 'locationUpdated'

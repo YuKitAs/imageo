@@ -15,9 +15,12 @@ module.exports = {
 }
 
 async function onFileSelect (g) {
-  const imgDom = createImgDom(await loadFile(g.doms.fileSelectionInput.files[0]))
-  g.doms.mapImageLayer.appendChild(imgDom)
-  g.eventBus.dispatchEvent(new CustomEvent(eventType.FILE_LOADED))
+  const imageDataUrl = await loadFile(g.doms.fileSelectionInput.files[0])
+  const imageElement = await createImageElement(imageDataUrl)
+
+  g.eventBus
+    .dispatchEvent(new CustomEvent(eventType.FILE_LOADED, { detail: { image: imageElement } }))
+  g.doms.mapImageLayer.appendChild(imageElement)
 }
 
 function loadFile (file) {
@@ -28,8 +31,12 @@ function loadFile (file) {
   })
 }
 
-function createImgDom (imageDataUrl) {
-  const img = document.createElement('img')
-  img.src = imageDataUrl
-  return img
+function createImageElement (imageDataUrl) {
+  return new Promise(resolve => {
+    const imageElement = document.createElement('img')
+    imageElement.id = 'navigation-map-image'
+    imageElement.className = 'navigation-map-image'
+    imageElement.addEventListener('load', () => resolve(imageElement), { once: true })
+    imageElement.src = imageDataUrl
+  })
 }
