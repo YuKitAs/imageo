@@ -20,23 +20,30 @@
     </svg>
     <div class="file-selection-prompt">Tap to select an image</div>
     <input id="file-selection-input" class="container file-selection-input" type="file"
-      accept="image/*" />
+      accept="image/*"></input>
   </div>
 
   <div id="navigation-view" class="container navigation-view">
 
-    <div id="navigation-transform-layer" class="layer navigation-transform-layer">
-      <div id="navigation-map-image-layer" class="layer navigation-map-image-layer">
+    <div id="navigation-transformation-controller"
+      class="container navigation-transformation-controller">
+
+      <div id="navigation-translated-layer" class="layer navigation-translated-layer">
+
+        <div id="navigation-scaled-layer" class="layer navigation-scaled-layer">
+          <div id="navigation-map-image-layer" class="layer navigation-map-image-layer"></div>
+        </div>
+
+        <div id="navigation-marker-layer" class="layer navigation-marker-layer"></div>
+
+        <div id="navigation-popup-layer" class="layer navigation-popup-layer"></div>
+
       </div>
 
-      <div class="layer navigation-map-marker-layer">
-      </div>
-
-      <div class="layer navigation-popup-layer">
-      </div>
     </div>
 
-    <div class="container navigation-fixed-layer">
+    <div class="container navigation-control-container">
+
       <div class="navigation-tool-box">
         <button id="navigation-add-pin-button" class="navigation-tool-button">
           <svg class="add-pin-icon" width="20" height="20" viewBox="0 0 200 200">
@@ -48,9 +55,11 @@
           </svg>
         </button>
       </div>
+
       <div id="navigation-current-location" class="navigation-current-location">
         Locating...
       </div>
+
     </div>
 
   </div>
