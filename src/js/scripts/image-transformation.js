@@ -12,7 +12,7 @@ module.exports = {
   data: {
     viewport: { mutable: true },
     image: { mutable: true },
-    mapTransform: { mutable: true },
+    imageTransform: { mutable: true },
     pins: { mutable: false }
   },
 
@@ -59,13 +59,13 @@ function onFileLoaded (g, event) {
   image.height = event.detail.image.height
   g.data.image.setValue(image)
 
-  const mapTransform = g.data.mapTransform.getValue()
-  mapTransform.offset.x = (viewport.width - image.width) / 2
-  mapTransform.offset.y = (viewport.height - image.height) / 2
-  mapTransform.scale = 1
-  g.data.mapTransform.setValue(mapTransform)
+  const imageTransform = g.data.imageTransform.getValue()
+  imageTransform.offset.x = (viewport.width - image.width) / 2
+  imageTransform.offset.y = (viewport.height - image.height) / 2
+  imageTransform.scale = 1
+  g.data.imageTransform.setValue(imageTransform)
 
-  applyTransform(g, mapTransform)
+  applyTransform(g, imageTransform)
 }
 
 function onWindowResize (g) {
@@ -84,7 +84,7 @@ function onWindowResize (g) {
     1
   )
 
-  g.data.mapTransform.setValue(newTransform)
+  g.data.imageTransform.setValue(newTransform)
 
   applyTransform(g)
 }
@@ -112,7 +112,7 @@ function onWheel (g, event) {
     viewport.width + interactionEventHelper.getWheelDistance(event)
   )
 
-  g.data.mapTransform.setValue(newTransform)
+  g.data.imageTransform.setValue(newTransform)
 
   applyTransform(g)
 }
@@ -157,7 +157,7 @@ function doTransformation (g, position, distance, transformationState) {
     transformationState.lastDistance
   )
 
-  g.data.mapTransform.setValue(newTransform)
+  g.data.imageTransform.setValue(newTransform)
 
   applyTransform(g, newTransform)
 
@@ -185,7 +185,7 @@ function calculateTransform (g, position, lastPosition, distance, lastDistance) 
 
   const viewport = g.data.viewport.getValue()
   const image = g.data.image.getValue()
-  const oldTransform = g.data.mapTransform.getValue()
+  const oldTransform = g.data.imageTransform.getValue()
 
   const newTransform = {
     offset: { x: 0, y: 0 },
@@ -246,7 +246,7 @@ function calculateTransform (g, position, lastPosition, distance, lastDistance) 
 }
 
 function applyTransform (g) {
-  const transform = g.data.mapTransform.getValue()
+  const transform = g.data.imageTransform.getValue()
 
   applyImageTransform(g, transform)
   applyPinsTransform(g, transform)

@@ -1,14 +1,12 @@
 :root {
-  --color1: rgba(78, 83, 64, 1);
-  --color2: rgba(105, 114, 104, 1);
-  --color3: rgba(149, 163, 164, 1);
-  --color4: rgba(183, 209, 218, 1);
-  --color5: rgba(226, 232, 221, 1);
-  --lod-text-color: var(--color5);
-  --lod-bg-color: var(--color1);
-  --lod-bg-color-highlight: var(--color3);
-  --dol-text-color: var(--color1);
-  --dol-bg-color: var(--color5);
+  --lod-text-color: #e2e8dd;
+  --lod-bg-color: #4e5340;
+  --lod-bg-color-highlight: #95a3a4;
+  --dol-text-color: #4e5340;
+  --dol-bg-color: #e2e8dd;
+  --pin-color-1: #a22700;
+  --pin-color-2: #f27151;
+  --pin-color-3: #fff;
 }
 
 .container {
@@ -78,12 +76,22 @@ body {
   pointer-events: auto;
 }
 
-.navigation-control-container {
-  pointer-events: none;
-}
-
 .navigation-pin-icon {
   display: block;
+}
+
+.navigation-position-marker {
+  position: absolute;
+  top: -10px;
+  left: -11px;
+}
+
+.navigation-position-marker-icon {
+  display: block;
+}
+
+.navigation-control-container {
+  pointer-events: none;
 }
 
 .navigation-tool-box {

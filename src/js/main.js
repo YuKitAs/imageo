@@ -25,7 +25,7 @@ const globalData = {
     height: 0
   },
 
-  mapTransform: {
+  imageTransform: {
     offset: { x: 0, y: 0 },
     scale: 1
   },

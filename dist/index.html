@@ -24,9 +24,7 @@
   </div>
 
   <div id="navigation-view" class="container navigation-view">
-
     <div id="navigation-map-interactor" class="container navigation-map-interactor">
-
       <div id="navigation-translated-layer" class="layer navigation-translated-layer">
 
         <div id="navigation-scaled-layer" class="layer navigation-scaled-layer">
@@ -36,9 +34,8 @@
         <div id="navigation-marker-layer" class="layer navigation-marker-layer"></div>
 
         <div id="navigation-popup-layer" class="layer navigation-popup-layer"></div>
-
+        
       </div>
-
     </div>
 
     <div class="container navigation-control-container">
@@ -71,10 +68,18 @@
     <div id="navigation-pin-template" class="navigation-pin">
       <svg class="navigation-pin-icon" width="35" height="40" viewBox="0 0 175 200">
         <polygon points="80 130 100 200 120 130" stroke="none" stroke-width="0"
-          fill="var(--color1)" />
-        <circle cx="100" cy="70" r="65" stroke="none" fill="var(--color1)" />
-        <circle cx="100" cy="70" r="40" stroke="none" fill="var(--color3)" />
-        <circle cx="100" cy="70" r="15" stroke="none" fill="var(--color5)" />
+          fill="var(--pin-color-1)" />
+        <circle cx="100" cy="70" r="65" stroke="none" fill="var(--pin-color-1)" />
+        <circle cx="100" cy="70" r="40" stroke="none" fill="var(--pin-color-2)" />
+        <circle cx="100" cy="70" r="15" stroke="none" fill="var(--pin-color-3)" />
+      </svg>
+    </div>
+    <div id="navigation-position-marker-template" class="navigation-position-marker">
+      <svg class="navigation-position-marker-icon"
+        width="20" height="20" viewBox="0 0 200 200">
+        <circle cx="100" cy="100" r="90" stroke="none" fill="var(--pin-color-1)" />
+        <circle cx="100" cy="100" r="60" stroke="none" fill="var(--pin-color-2)" />
+        <circle cx="100" cy="100" r="30" stroke="none" fill="var(--pin-color-3)" />
       </svg>
     </div>
   </div>

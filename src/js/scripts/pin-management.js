@@ -10,7 +10,7 @@ module.exports = {
 
   data: {
     currentPosition: { mutable: false },
-    mapTransform: { mutable: false },
+    imageTransform: { mutable: false },
     pins: { mutable: true }
   },
 
@@ -60,7 +60,7 @@ function doAddingPin (g, viewportCoord, pinAddingState) {
 
   const geoCoord = g.data.currentPosition.getValue()
 
-  const currentTransform = g.data.mapTransform.getValue()
+  const currentTransform = g.data.imageTransform.getValue()
   const imageDisplayCoord = {
     x: viewportCoord.x - currentTransform.offset.x,
     y: viewportCoord.y - currentTransform.offset.y
@@ -78,7 +78,6 @@ function doAddingPin (g, viewportCoord, pinAddingState) {
   pinElement.id = `navigation-pin-${id}`
   pinElement.style.transform = `translate(${imageDisplayCoord.x}px, ${imageDisplayCoord.y}px)`
   pinElement.addEventListener('click', () => onPinClick(g, id))
-
   g.doms.markerLayer.appendChild(pinElement)
 }
 
