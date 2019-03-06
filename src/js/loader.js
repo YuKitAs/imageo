@@ -10,7 +10,7 @@ function loadOne (script, globalData, eventBus) {
 
   function addData (localData, name, mutable) {
     localData[name] = {}
-    localData[name].getValue = () => { return JSON.parse(JSON.stringify(globalData[name])) }
+    localData[name].getValue = () => JSON.parse(JSON.stringify(globalData[name]))
     if (mutable) {
       localData[name].setValue = value => { globalData[name] = value }
     }

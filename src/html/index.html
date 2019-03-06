@@ -25,8 +25,7 @@
 
   <div id="navigation-view" class="container navigation-view">
 
-    <div id="navigation-transformation-controller"
-      class="container navigation-transformation-controller">
+    <div id="navigation-map-interactor" class="container navigation-map-interactor">
 
       <div id="navigation-translated-layer" class="layer navigation-translated-layer">
 
@@ -46,22 +45,38 @@
 
       <div class="navigation-tool-box">
         <button id="navigation-add-pin-button" class="navigation-tool-button">
-          <svg class="add-pin-icon" width="20" height="20" viewBox="0 0 200 200">
-            <circle cx="100" cy="60" r="45" stroke="var(--lod-text-color)" stroke-width="20"
+          <svg class="navigation-add-pin-icon" width="20" height="20" viewBox="0 0 200 200">
+            <circle cx="140" cy="60" r="45" stroke="var(--lod-text-color)" stroke-width="20"
               fill="none" />
-            <line x1="100" y1="115" x2="100" y2="155" stroke="var(--lod-text-color)"
+            <line x1="140" y1="115" x2="140" y2="155" stroke="var(--lod-text-color)"
               stroke-width="20" stroke-linecap="round" />
-            <circle cx="100" cy="190" r="10" fill="var(--lod-text-color)" />
+            <circle cx="140" cy="190" r="10" fill="var(--lod-text-color)" />
+            <line x1="10" y1="150" x2="70" y2="150" stroke="var(--lod-text-color)" stroke-width="20"
+              stroke-linecap="round" />
+            <line x1="40" y1="120" x2="40" y2="180" stroke="var(--lod-text-color)" stroke-width="20"
+              stroke-linecap="round" />
           </svg>
         </button>
       </div>
 
-      <div id="navigation-current-location" class="navigation-current-location">
-        Locating...
+      <div id="navigation-current-position-text" class="navigation-current-position-text">
+        Positioning...
       </div>
 
     </div>
 
+  </div>
+
+  <div class="templates">
+    <div id="navigation-pin-template" class="navigation-pin">
+      <svg class="navigation-pin-icon" width="35" height="40" viewBox="0 0 175 200">
+        <polygon points="80 130 100 200 120 130" stroke="none" stroke-width="0"
+          fill="var(--color1)" />
+        <circle cx="100" cy="70" r="65" stroke="none" fill="var(--color1)" />
+        <circle cx="100" cy="70" r="40" stroke="none" fill="var(--color3)" />
+        <circle cx="100" cy="70" r="15" stroke="none" fill="var(--color5)" />
+      </svg>
+    </div>
   </div>
 </body>
 

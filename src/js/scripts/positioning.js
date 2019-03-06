@@ -17,7 +17,7 @@ module.exports = {
       g.data.currentPosition.setValue(currentPosition)
       g.eventBus.dispatchEvent(
         new CustomEvent(
-          eventType.LOCATION_UPDATED,
+          eventType.POSITION_UPDATED,
           {
             detail: currentPosition
           }

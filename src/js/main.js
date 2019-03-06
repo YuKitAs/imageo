@@ -1,11 +1,11 @@
-require('./polyfill')
 const loader = require('./loader')
 
 const scripts = [
-  require('./scripts/current-location-displaying'),
+  require('./scripts/current-position-displaying'),
   require('./scripts/file-loading'),
-  require('./scripts/locating'),
   require('./scripts/map-image-transformation'),
+  require('./scripts/pin-management'),
+  require('./scripts/positioning'),
   require('./scripts/view-switching')
 ]
 
@@ -28,7 +28,9 @@ const globalData = {
   mapTransform: {
     offset: { x: 0, y: 0 },
     scale: 1
-  }
+  },
+
+  pins: []
 }
 
 const eventBus = new EventTarget()

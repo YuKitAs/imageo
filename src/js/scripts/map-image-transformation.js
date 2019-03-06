@@ -1,11 +1,10 @@
 const eventType = require('../utilities/event-type')
 const interactionEventHelper = require('../utilities/interaction-event-helper')
-const transformationHelper = require('../utilities/transformation-helper')
 
 module.exports = {
   doms: {
     body: 'body',
-    transformationController: '#navigation-transformation-controller',
+    mapInteractor: '#navigation-map-interactor',
     translatedLayer: '#navigation-translated-layer',
     scaledLayer: '#navigation-scaled-layer'
   },
@@ -13,7 +12,8 @@ module.exports = {
   data: {
     viewport: { mutable: true },
     mapImage: { mutable: true },
-    mapTransform: { mutable: true }
+    mapTransform: { mutable: true },
+    pins: { mutable: false }
   },
 
   init (g) {
@@ -29,21 +29,21 @@ module.exports = {
     window
       .addEventListener('resize', () => onWindowResize(g))
 
-    g.doms.transformationController
+    g.doms.mapInteractor
       .addEventListener('contextmenu', event => event.preventDefault())
-    g.doms.transformationController
+    g.doms.mapInteractor
       .addEventListener('mousedown', event => onMouseDown(event, transformationState))
-    g.doms.transformationController
+    g.doms.mapInteractor
       .addEventListener('mousemove', event => onMouseMove(g, event, transformationState))
-    g.doms.transformationController
+    g.doms.mapInteractor
       .addEventListener('mouseup', () => onMouseUp(transformationState))
-    g.doms.transformationController
+    g.doms.mapInteractor
       .addEventListener('wheel', event => onWheel(g, event))
-    g.doms.transformationController
+    g.doms.mapInteractor
       .addEventListener('touchstart', event => onTouchStart(event, transformationState))
-    g.doms.transformationController
+    g.doms.mapInteractor
       .addEventListener('touchmove', event => onTouchMove(g, event, transformationState))
-    g.doms.transformationController
+    g.doms.mapInteractor
       .addEventListener('touchend', () => onTouchEnd(transformationState))
   }
 }
@@ -65,7 +65,7 @@ function onFileLoaded (g, event) {
   mapTransform.scale = 1
   g.data.mapTransform.setValue(mapTransform)
 
-  applyTransform(g)
+  applyTransform(g, mapTransform)
 }
 
 function onWindowResize (g) {
@@ -76,16 +76,13 @@ function onWindowResize (g) {
   viewport.height = g.doms.body.clientHeight
   g.data.viewport.setValue(viewport)
 
-  const newTransform = transformationHelper.calculateMapImageTransform(
-    g.data.viewport.getValue(),
-    g.data.mapImage.getValue(),
-    g.data.mapTransform.getValue(),
-    {
-      position: { x: viewport.width / 2, y: viewport.height / 2 },
-      distance: 1,
-      lastPosition: { x: lastViewport.width / 2, y: lastViewport.height / 2 },
-      lastDistance: 1
-    })
+  const newTransform = calculateTransform(
+    g,
+    { x: viewport.width / 2, y: viewport.height / 2 },
+    { x: lastViewport.width / 2, y: lastViewport.height / 2 },
+    1,
+    1
+  )
 
   g.data.mapTransform.setValue(newTransform)
 
@@ -107,16 +104,13 @@ function onMouseUp (transformationState) {
 function onWheel (g, event) {
   const viewport = g.data.viewport.getValue()
 
-  const newTransform = transformationHelper.calculateMapImageTransform(
-    viewport,
-    g.data.mapImage.getValue(),
-    g.data.mapTransform.getValue(),
-    {
-      position: interactionEventHelper.getMousePosition(event),
-      distance: viewport.width,
-      lastPosition: interactionEventHelper.getMousePosition(event),
-      lastDistance: viewport.width + interactionEventHelper.getWheelDistance(event)
-    })
+  const newTransform = calculateTransform(
+    g,
+    interactionEventHelper.getMousePosition(event),
+    interactionEventHelper.getMousePosition(event),
+    viewport.width,
+    viewport.width + interactionEventHelper.getWheelDistance(event)
+  )
 
   g.data.mapTransform.setValue(newTransform)
 
@@ -155,20 +149,17 @@ function startTransformation (position, distance, transformationState) {
 function doTransformation (g, position, distance, transformationState) {
   if (!transformationState.ongoing) return
 
-  const newTransform = transformationHelper.calculateMapImageTransform(
-    g.data.viewport.getValue(),
-    g.data.mapImage.getValue(),
-    g.data.mapTransform.getValue(),
-    {
-      position,
-      distance,
-      lastPosition: transformationState.lastPosition,
-      lastDistance: transformationState.lastDistance
-    })
+  const newTransform = calculateTransform(
+    g,
+    position,
+    transformationState.lastPosition,
+    distance,
+    transformationState.lastDistance
+  )
 
   g.data.mapTransform.setValue(newTransform)
 
-  applyTransform(g)
+  applyTransform(g, newTransform)
 
   transformationState.lastPosition = {
     x: position.x,
@@ -188,10 +179,95 @@ function stopTransformation (transformationState) {
   transformationState.lastDistance = 0
 }
 
+function calculateTransform (g, position, lastPosition, distance, lastDistance) {
+  const MINIMUM_SCALE = 0.2
+  const MAXIMUM_SCALE = 5.0
+
+  const viewport = g.data.viewport.getValue()
+  const mapImage = g.data.mapImage.getValue()
+  const oldTransform = g.data.mapTransform.getValue()
+
+  const newTransform = {
+    offset: { x: 0, y: 0 },
+    scale: 1
+  }
+
+  const displayDimension = {
+    width: mapImage.width * oldTransform.scale,
+    height: mapImage.height * oldTransform.scale
+  }
+
+  const imagePivot = {
+    x: lastPosition.x - oldTransform.offset.x,
+    y: lastPosition.y - oldTransform.offset.y
+  }
+
+  let scaleRatio = distance / lastDistance || 1
+
+  newTransform.scale = oldTransform.scale * scaleRatio
+  if (newTransform.scale > MAXIMUM_SCALE) {
+    newTransform.scale = MAXIMUM_SCALE
+    scaleRatio = newTransform.scale / oldTransform.scale
+  } else if (newTransform.scale < MINIMUM_SCALE) {
+    newTransform.scale = MINIMUM_SCALE
+    scaleRatio = newTransform.scale / oldTransform.scale
+  }
+  displayDimension.width *= scaleRatio
+  displayDimension.height *= scaleRatio
+  imagePivot.x *= scaleRatio
+  imagePivot.y *= scaleRatio
+
+  newTransform.offset.x = position.x - imagePivot.x
+  newTransform.offset.y = position.y - imagePivot.y
+
+  if (displayDimension.width > viewport.width) {
+    if (newTransform.offset.x > 0) {
+      newTransform.offset.x = 0
+    }
+    if (newTransform.offset.x < viewport.width - displayDimension.width) {
+      newTransform.offset.x = viewport.width - displayDimension.width
+    }
+  } else {
+    newTransform.offset.x = (viewport.width - displayDimension.width) / 2
+  }
+
+  if (displayDimension.height > viewport.height) {
+    if (newTransform.offset.y > 0) {
+      newTransform.offset.y = 0
+    }
+    if (newTransform.offset.y < viewport.height - displayDimension.height) {
+      newTransform.offset.y = viewport.height - displayDimension.height
+    }
+  } else {
+    newTransform.offset.y = (viewport.height - displayDimension.height) / 2
+  }
+
+  return newTransform
+}
+
 function applyTransform (g) {
-  const mapTransform = g.data.mapTransform.getValue()
+  const transform = g.data.mapTransform.getValue()
+
+  applyMapImageTransform(g, transform)
+  applyPinsTransform(g, transform)
+}
+
+function applyMapImageTransform (g, transform) {
   g.doms.translatedLayer.style.transform =
-    `translate(${mapTransform.offset.x}px, ${mapTransform.offset.y}px)`
+    `translate(${transform.offset.x}px, ${transform.offset.y}px)`
   g.doms.scaledLayer.style.transform =
-    `scale(${mapTransform.scale})`
+    `scale(${transform.scale})`
+}
+
+function applyPinsTransform (g, transform) {
+  for (const pin of g.data.pins.getValue()) {
+    const pinDom = document.getElementById(`navigation-pin-${pin.id}`)
+    const imageDisplayCoordinate = {
+      x: pin.imageCoordinate.x * transform.scale,
+      y: pin.imageCoordinate.y * transform.scale
+    }
+
+    pinDom.style.transform =
+      `translate(${imageDisplayCoordinate.x}px, ${imageDisplayCoordinate.y}px)`
+  }
 }
