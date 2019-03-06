@@ -46,8 +46,13 @@ function displayCurrentPositionMarker (g, geoCoord) {
     y: imageCoord.y * imageTransform.scale
   }
 
-  const positionMarkerElement = g.doms.positionMarkerTemplate.cloneNode(true)
+  let positionMarkerElement = document.getElementById('navigation-position-marker')
+  if (!positionMarkerElement) {
+    positionMarkerElement = g.doms.positionMarkerTemplate.cloneNode(true)
+    positionMarkerElement.id = 'navigation-position-marker'
+    g.doms.markerLayer.appendChild(positionMarkerElement)
+  }
+
   positionMarkerElement.style.transform =
     `translate(${imageDisplayCoord.x}px, ${imageDisplayCoord.y}px)`
-  g.doms.markerLayer.appendChild(positionMarkerElement)
 }

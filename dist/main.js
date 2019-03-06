@@ -59473,10 +59473,15 @@ function displayCurrentPositionMarker (g, geoCoord) {
     y: imageCoord.y * imageTransform.scale
   }
 
-  const positionMarkerElement = g.doms.positionMarkerTemplate.cloneNode(true)
+  let positionMarkerElement = document.getElementById('navigation-position-marker')
+  if (!positionMarkerElement) {
+    positionMarkerElement = g.doms.positionMarkerTemplate.cloneNode(true)
+    positionMarkerElement.id = 'navigation-position-marker'
+    g.doms.markerLayer.appendChild(positionMarkerElement)
+  }
+
   positionMarkerElement.style.transform =
     `translate(${imageDisplayCoord.x}px, ${imageDisplayCoord.y}px)`
-  g.doms.markerLayer.appendChild(positionMarkerElement)
 }
 
 },{"../utilities/event-type":587,"../utilities/geo-image-transformation":588}],582:[function(require,module,exports){
@@ -59525,6 +59530,7 @@ function createImageElement (imageDataUrl) {
 
 },{"../utilities/event-type":587}],583:[function(require,module,exports){
 const eventType = require('../utilities/event-type')
+const geoImageTransformation = require('../utilities/geo-image-transformation')
 const interactionEventHelper = require('../utilities/interaction-event-helper')
 
 module.exports = {
@@ -59539,6 +59545,7 @@ module.exports = {
     viewport: { mutable: true },
     image: { mutable: true },
     imageTransform: { mutable: true },
+    currentPosition: { mutable: false },
     pins: { mutable: false }
   },
 
@@ -59772,33 +59779,54 @@ function calculateTransform (g, position, lastPosition, distance, lastDistance) 
 }
 
 function applyTransform (g) {
-  const transform = g.data.imageTransform.getValue()
+  const imageTransform = g.data.imageTransform.getValue()
+  const pins = g.data.pins.getValue()
+  const currentPosition = g.data.currentPosition.getValue()
 
-  applyImageTransform(g, transform)
-  applyPinsTransform(g, transform)
-}
+  function applyImageTransform () {
+    g.doms.translatedLayer.style.transform =
+      `translate(${imageTransform.offset.x}px, ${imageTransform.offset.y}px)`
+    g.doms.scaledLayer.style.transform =
+      `scale(${imageTransform.scale})`
+  }
 
-function applyImageTransform (g, transform) {
-  g.doms.translatedLayer.style.transform =
-    `translate(${transform.offset.x}px, ${transform.offset.y}px)`
-  g.doms.scaledLayer.style.transform =
-    `scale(${transform.scale})`
-}
+  function applyPinsTransform () {
+    for (const pin of pins) {
+      const pinDom = document.getElementById(`navigation-pin-${pin.id}`)
+      const imageDisplayCoord = {
+        x: pin.imageCoord.x * imageTransform.scale,
+        y: pin.imageCoord.y * imageTransform.scale
+      }
 
-function applyPinsTransform (g, transform) {
-  for (const pin of g.data.pins.getValue()) {
-    const pinDom = document.getElementById(`navigation-pin-${pin.id}`)
-    const imageDisplayCoordinate = {
-      x: pin.imageCoord.x * transform.scale,
-      y: pin.imageCoord.y * transform.scale
+      pinDom.style.transform =
+        `translate(${imageDisplayCoord.x}px, ${imageDisplayCoord.y}px)`
+    }
+  }
+
+  function applyPositionMarkerTransform () {
+    const positionMarkerDom = document.getElementById('navigation-position-marker')
+    if (!positionMarkerDom) return
+
+    const transformationFunction = geoImageTransformation.buildTransformation(pins)
+    if (!transformationFunction) return
+
+    const imageCoord = transformationFunction(currentPosition)
+
+    const imageDisplayCoord = {
+      x: imageCoord.x * imageTransform.scale,
+      y: imageCoord.y * imageTransform.scale
     }
 
-    pinDom.style.transform =
-      `translate(${imageDisplayCoordinate.x}px, ${imageDisplayCoordinate.y}px)`
+    positionMarkerDom.style.transform =
+      `translate(${imageDisplayCoord.x}px, ${imageDisplayCoord.y}px)`
   }
+
+  applyImageTransform()
+  applyPinsTransform()
+  applyPositionMarkerTransform()
 }
 
-},{"../utilities/event-type":587,"../utilities/interaction-event-helper":589}],584:[function(require,module,exports){
+},{"../utilities/event-type":587,"../utilities/geo-image-transformation":588,"../utilities/interaction-event-helper":589}],584:[function(require,module,exports){
 const interactionEventHelper = require('../utilities/interaction-event-helper')
 
 module.exports = {
