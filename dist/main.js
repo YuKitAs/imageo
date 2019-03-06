@@ -50,8 +50,8 @@ const scripts = [
 
 const globalData = {
   currentPosition: {
-    latitude: 0,
-    longitude: 0
+    lat: 0,
+    long: 0
   },
 
   viewport: {
@@ -93,7 +93,7 @@ module.exports = {
   init (g) {
     g.eventBus.addEventListener(eventType.POSITION_UPDATED, event => {
       g.doms.currentPositionText.innerText =
-        `${event.detail.latitude.toFixed(7)}, ${event.detail.longitude.toFixed(7)}`
+        `${event.detail.lat.toFixed(7)}, ${event.detail.long.toFixed(7)}`
     })
   }
 }
@@ -408,8 +408,8 @@ function applyPinsTransform (g, transform) {
   for (const pin of g.data.pins.getValue()) {
     const pinDom = document.getElementById(`navigation-pin-${pin.id}`)
     const imageDisplayCoordinate = {
-      x: pin.imageCoordinate.x * transform.scale,
-      y: pin.imageCoordinate.y * transform.scale
+      x: pin.imageCoord.x * transform.scale,
+      y: pin.imageCoord.y * transform.scale
     }
 
     pinDom.style.transform =
@@ -478,26 +478,25 @@ function startAddingPin (g, pinAddingState) {
 function doAddingPin (g, viewportCoord, pinAddingState) {
   const id = pinAddingState.nextPinId++
 
-  const position = g.data.currentPosition.getValue()
+  const geoCoord = g.data.currentPosition.getValue()
 
   const currentTransform = g.data.mapTransform.getValue()
-  const imageDisplayCoordinate = {
+  const imageDisplayCoord = {
     x: viewportCoord.x - currentTransform.offset.x,
     y: viewportCoord.y - currentTransform.offset.y
   }
-  const imageCoordinate = {
-    x: imageDisplayCoordinate.x / currentTransform.scale,
-    y: imageDisplayCoordinate.y / currentTransform.scale
+  const imageCoord = {
+    x: imageDisplayCoord.x / currentTransform.scale,
+    y: imageDisplayCoord.y / currentTransform.scale
   }
 
   const pins = g.data.pins.getValue()
-  pins.push({ id, position, imageCoordinate })
+  pins.push({ id, geoCoord, imageCoord })
   g.data.pins.setValue(pins)
 
   const pinElement = g.doms.pinTemplate.cloneNode(true)
   pinElement.id = `navigation-pin-${id}`
-  pinElement.style.transform =
-    `translate(${imageDisplayCoordinate.x}px, ${imageDisplayCoordinate.y}px)`
+  pinElement.style.transform = `translate(${imageDisplayCoord.x}px, ${imageDisplayCoord.y}px)`
   pinElement.addEventListener('click', () => onPinClick(g, id))
 
   g.doms.markerLayer.appendChild(pinElement)
@@ -525,8 +524,8 @@ module.exports = {
     const options = { enableHighAccuracy: true, timeout: 10000, maximumAge: 5000 }
     navigator.geolocation.watchPosition(position => {
       const currentPosition = {
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude
+        lat: position.coords.latitude,
+        long: position.coords.longitude
       }
       g.data.currentPosition.setValue(currentPosition)
       g.eventBus.dispatchEvent(

@@ -263,8 +263,8 @@ function applyPinsTransform (g, transform) {
   for (const pin of g.data.pins.getValue()) {
     const pinDom = document.getElementById(`navigation-pin-${pin.id}`)
     const imageDisplayCoordinate = {
-      x: pin.imageCoordinate.x * transform.scale,
-      y: pin.imageCoordinate.y * transform.scale
+      x: pin.imageCoord.x * transform.scale,
+      y: pin.imageCoord.y * transform.scale
     }
 
     pinDom.style.transform =

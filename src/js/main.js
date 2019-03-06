@@ -11,8 +11,8 @@ const scripts = [
 
 const globalData = {
   currentPosition: {
-    latitude: 0,
-    longitude: 0
+    lat: 0,
+    long: 0
   },
 
   viewport: {

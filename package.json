@@ -31,5 +31,8 @@
     "postcss-cli": "^6.1.2",
     "stylelint": "^9.10.1",
     "stylelint-config-standard": "^18.2.0"
+  },
+  "dependencies": {
+    "mathjs": "^5.6.0"
   }
 }

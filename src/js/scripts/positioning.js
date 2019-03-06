@@ -11,8 +11,8 @@ module.exports = {
     const options = { enableHighAccuracy: true, timeout: 10000, maximumAge: 5000 }
     navigator.geolocation.watchPosition(position => {
       const currentPosition = {
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude
+        lat: position.coords.latitude,
+        long: position.coords.longitude
       }
       g.data.currentPosition.setValue(currentPosition)
       g.eventBus.dispatchEvent(

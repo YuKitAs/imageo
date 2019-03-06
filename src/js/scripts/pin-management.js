@@ -58,26 +58,25 @@ function startAddingPin (g, pinAddingState) {
 function doAddingPin (g, viewportCoord, pinAddingState) {
   const id = pinAddingState.nextPinId++
 
-  const position = g.data.currentPosition.getValue()
+  const geoCoord = g.data.currentPosition.getValue()
 
   const currentTransform = g.data.mapTransform.getValue()
-  const imageDisplayCoordinate = {
+  const imageDisplayCoord = {
     x: viewportCoord.x - currentTransform.offset.x,
     y: viewportCoord.y - currentTransform.offset.y
   }
-  const imageCoordinate = {
-    x: imageDisplayCoordinate.x / currentTransform.scale,
-    y: imageDisplayCoordinate.y / currentTransform.scale
+  const imageCoord = {
+    x: imageDisplayCoord.x / currentTransform.scale,
+    y: imageDisplayCoord.y / currentTransform.scale
   }
 
   const pins = g.data.pins.getValue()
-  pins.push({ id, position, imageCoordinate })
+  pins.push({ id, geoCoord, imageCoord })
   g.data.pins.setValue(pins)
 
   const pinElement = g.doms.pinTemplate.cloneNode(true)
   pinElement.id = `navigation-pin-${id}`
-  pinElement.style.transform =
-    `translate(${imageDisplayCoordinate.x}px, ${imageDisplayCoordinate.y}px)`
+  pinElement.style.transform = `translate(${imageDisplayCoord.x}px, ${imageDisplayCoord.y}px)`
   pinElement.addEventListener('click', () => onPinClick(g, id))
 
   g.doms.markerLayer.appendChild(pinElement)
