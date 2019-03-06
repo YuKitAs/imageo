@@ -42,7 +42,7 @@ const loader = require('./loader')
 const scripts = [
   require('./scripts/current-position-displaying'),
   require('./scripts/file-loading'),
-  require('./scripts/map-image-transformation'),
+  require('./scripts/image-transformation'),
   require('./scripts/pin-management'),
   require('./scripts/positioning'),
   require('./scripts/view-switching')
@@ -59,7 +59,7 @@ const globalData = {
     height: 0
   },
 
-  mapImage: {
+  image: {
     width: 0,
     height: 0
   },
@@ -80,7 +80,7 @@ if (document.readyState === 'loading') {
   loader.load(scripts, globalData, eventBus)
 }
 
-},{"./loader":1,"./scripts/current-position-displaying":3,"./scripts/file-loading":4,"./scripts/map-image-transformation":5,"./scripts/pin-management":6,"./scripts/positioning":7,"./scripts/view-switching":8}],3:[function(require,module,exports){
+},{"./loader":1,"./scripts/current-position-displaying":3,"./scripts/file-loading":4,"./scripts/image-transformation":5,"./scripts/pin-management":6,"./scripts/positioning":7,"./scripts/view-switching":8}],3:[function(require,module,exports){
 const eventType = require('../utilities/event-type')
 
 module.exports = {
@@ -104,7 +104,7 @@ const eventType = require('../utilities/event-type')
 module.exports = {
   doms: {
     fileSelectionInput: '#file-selection-input',
-    mapImageLayer: '#navigation-map-image-layer'
+    imageLayer: '#navigation-image-layer'
   },
 
   data: {},
@@ -121,7 +121,7 @@ async function onFileSelect (g) {
 
   g.eventBus
     .dispatchEvent(new CustomEvent(eventType.FILE_LOADED, { detail: { image: imageElement } }))
-  g.doms.mapImageLayer.appendChild(imageElement)
+  g.doms.imageLayer.appendChild(imageElement)
 }
 
 function loadFile (file) {
@@ -135,8 +135,8 @@ function loadFile (file) {
 function createImageElement (imageDataUrl) {
   return new Promise(resolve => {
     const imageElement = document.createElement('img')
-    imageElement.id = 'navigation-map-image'
-    imageElement.className = 'navigation-map-image'
+    imageElement.id = 'navigation-image'
+    imageElement.className = 'navigation-image'
     imageElement.addEventListener('load', () => resolve(imageElement), { once: true })
     imageElement.src = imageDataUrl
   })
@@ -156,7 +156,7 @@ module.exports = {
 
   data: {
     viewport: { mutable: true },
-    mapImage: { mutable: true },
+    image: { mutable: true },
     mapTransform: { mutable: true },
     pins: { mutable: false }
   },
@@ -199,14 +199,14 @@ function onFileLoaded (g, event) {
   viewport.height = g.doms.body.clientHeight
   g.data.viewport.setValue(viewport)
 
-  const mapImage = g.data.mapImage.getValue()
-  mapImage.width = event.detail.image.width
-  mapImage.height = event.detail.image.height
-  g.data.mapImage.setValue(mapImage)
+  const image = g.data.image.getValue()
+  image.width = event.detail.image.width
+  image.height = event.detail.image.height
+  g.data.image.setValue(image)
 
   const mapTransform = g.data.mapTransform.getValue()
-  mapTransform.offset.x = (viewport.width - mapImage.width) / 2
-  mapTransform.offset.y = (viewport.height - mapImage.height) / 2
+  mapTransform.offset.x = (viewport.width - image.width) / 2
+  mapTransform.offset.y = (viewport.height - image.height) / 2
   mapTransform.scale = 1
   g.data.mapTransform.setValue(mapTransform)
 
@@ -329,7 +329,7 @@ function calculateTransform (g, position, lastPosition, distance, lastDistance) 
   const MAXIMUM_SCALE = 5.0
 
   const viewport = g.data.viewport.getValue()
-  const mapImage = g.data.mapImage.getValue()
+  const image = g.data.image.getValue()
   const oldTransform = g.data.mapTransform.getValue()
 
   const newTransform = {
@@ -338,8 +338,8 @@ function calculateTransform (g, position, lastPosition, distance, lastDistance) 
   }
 
   const displayDimension = {
-    width: mapImage.width * oldTransform.scale,
-    height: mapImage.height * oldTransform.scale
+    width: image.width * oldTransform.scale,
+    height: image.height * oldTransform.scale
   }
 
   const imagePivot = {
@@ -393,11 +393,11 @@ function calculateTransform (g, position, lastPosition, distance, lastDistance) 
 function applyTransform (g) {
   const transform = g.data.mapTransform.getValue()
 
-  applyMapImageTransform(g, transform)
+  applyImageTransform(g, transform)
   applyPinsTransform(g, transform)
 }
 
-function applyMapImageTransform (g, transform) {
+function applyImageTransform (g, transform) {
   g.doms.translatedLayer.style.transform =
     `translate(${transform.offset.x}px, ${transform.offset.y}px)`
   g.doms.scaledLayer.style.transform =

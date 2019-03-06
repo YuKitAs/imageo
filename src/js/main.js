@@ -3,7 +3,7 @@ const loader = require('./loader')
 const scripts = [
   require('./scripts/current-position-displaying'),
   require('./scripts/file-loading'),
-  require('./scripts/map-image-transformation'),
+  require('./scripts/image-transformation'),
   require('./scripts/pin-management'),
   require('./scripts/positioning'),
   require('./scripts/view-switching')
@@ -20,7 +20,7 @@ const globalData = {
     height: 0
   },
 
-  mapImage: {
+  image: {
     width: 0,
     height: 0
   },

@@ -11,7 +11,7 @@ module.exports = {
 
   data: {
     viewport: { mutable: true },
-    mapImage: { mutable: true },
+    image: { mutable: true },
     mapTransform: { mutable: true },
     pins: { mutable: false }
   },
@@ -54,14 +54,14 @@ function onFileLoaded (g, event) {
   viewport.height = g.doms.body.clientHeight
   g.data.viewport.setValue(viewport)
 
-  const mapImage = g.data.mapImage.getValue()
-  mapImage.width = event.detail.image.width
-  mapImage.height = event.detail.image.height
-  g.data.mapImage.setValue(mapImage)
+  const image = g.data.image.getValue()
+  image.width = event.detail.image.width
+  image.height = event.detail.image.height
+  g.data.image.setValue(image)
 
   const mapTransform = g.data.mapTransform.getValue()
-  mapTransform.offset.x = (viewport.width - mapImage.width) / 2
-  mapTransform.offset.y = (viewport.height - mapImage.height) / 2
+  mapTransform.offset.x = (viewport.width - image.width) / 2
+  mapTransform.offset.y = (viewport.height - image.height) / 2
   mapTransform.scale = 1
   g.data.mapTransform.setValue(mapTransform)
 
@@ -184,7 +184,7 @@ function calculateTransform (g, position, lastPosition, distance, lastDistance) 
   const MAXIMUM_SCALE = 5.0
 
   const viewport = g.data.viewport.getValue()
-  const mapImage = g.data.mapImage.getValue()
+  const image = g.data.image.getValue()
   const oldTransform = g.data.mapTransform.getValue()
 
   const newTransform = {
@@ -193,8 +193,8 @@ function calculateTransform (g, position, lastPosition, distance, lastDistance) 
   }
 
   const displayDimension = {
-    width: mapImage.width * oldTransform.scale,
-    height: mapImage.height * oldTransform.scale
+    width: image.width * oldTransform.scale,
+    height: image.height * oldTransform.scale
   }
 
   const imagePivot = {
@@ -248,11 +248,11 @@ function calculateTransform (g, position, lastPosition, distance, lastDistance) 
 function applyTransform (g) {
   const transform = g.data.mapTransform.getValue()
 
-  applyMapImageTransform(g, transform)
+  applyImageTransform(g, transform)
   applyPinsTransform(g, transform)
 }
 
-function applyMapImageTransform (g, transform) {
+function applyImageTransform (g, transform) {
   g.doms.translatedLayer.style.transform =
     `translate(${transform.offset.x}px, ${transform.offset.y}px)`
   g.doms.scaledLayer.style.transform =
