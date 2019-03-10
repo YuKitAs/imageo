@@ -7,13 +7,20 @@ Load an image, mark several points on the image with the current device position
 ## Ideas & Caveats & Bugs
 
 ### Algorithm Related
-* The image must have the north direction pointing upwards.
-* If the 2 points have similar x value or y value on the image, the geo-image transformation algorithm will be not accuracy in the x- or y-axis.
+* Currently the image must have the north direction pointing upwards.
 * Only the first 2 points added are taken into account for the geo-image transformation.
+* If the 2 points have similar x value or y value on the image, the geo-image transformation algorithm will be not accuracy in the x- or y-axis.
 * Geo-image transformation will be broken near the poles.
 
+### New Features
+* Users should be able to manually select a point on the image and assign its geographic coordinate.
+
 ### UX Related
+* Notify user when tab is going to be closed.
+* Notify user when pin is going to be removed.
+* Double tip to zoom.
 * After scaled the image with 2 fingers, then release 1 finger, at that moment, user cannot translate image with the 1 finger still on the screen.
+* Store added points, so that the users don't need browser running all the time.
 
 ### Usability Related
 * Safari on iOS is not supported. Android WebView is not tested. But we should do so because later on we may use cordova to build an App.
