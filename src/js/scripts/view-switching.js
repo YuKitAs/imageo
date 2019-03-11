@@ -9,11 +9,9 @@ module.exports = {
   data: {},
 
   init (g) {
-    g.doms.navigationView.style.display = 'none'
-
     g.eventBus.addEventListener(eventType.FILE_LOADED, () => {
-      g.doms.fileSelectionView.style.display = 'none'
-      g.doms.navigationView.style.display = 'block'
+      g.doms.fileSelectionView.hidden = true
+      g.doms.navigationView.hidden = false
     }, { once: true })
   }
 }

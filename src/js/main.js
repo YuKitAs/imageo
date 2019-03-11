@@ -1,6 +1,7 @@
 const loader = require('./loader')
 
 const scripts = [
+  require('./scripts/before-close-notification'),
   require('./scripts/current-position-displaying'),
   require('./scripts/file-loading'),
   require('./scripts/image-transformation'),

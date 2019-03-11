@@ -5,8 +5,8 @@
   "browser": "dist/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "scripts/lint.sh",
-    "build": "scripts/build.sh"
+    "lint": "bash scripts/lint.sh",
+    "build": "bash scripts/build.sh"
   },
   "repository": {
     "type": "git",

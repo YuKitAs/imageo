@@ -59384,6 +59384,7 @@ module.exports = { load, loadOne }
 const loader = require('./loader')
 
 const scripts = [
+  require('./scripts/before-close-notification'),
   require('./scripts/current-position-displaying'),
   require('./scripts/file-loading'),
   require('./scripts/image-transformation'),
@@ -59424,7 +59425,20 @@ if (document.readyState === 'loading') {
   loader.load(scripts, globalData, eventBus)
 }
 
-},{"./loader":579,"./scripts/current-position-displaying":581,"./scripts/file-loading":582,"./scripts/image-transformation":583,"./scripts/pin-management":584,"./scripts/positioning":585,"./scripts/view-switching":586}],581:[function(require,module,exports){
+},{"./loader":579,"./scripts/before-close-notification":581,"./scripts/current-position-displaying":582,"./scripts/file-loading":583,"./scripts/image-transformation":584,"./scripts/pin-management":585,"./scripts/positioning":586,"./scripts/view-switching":587}],581:[function(require,module,exports){
+module.exports = {
+  doms: {},
+
+  data: {},
+
+  init () {
+    window.addEventListener('beforeunload', event => {
+      event.returnValue = 'Do you really want to close this page?'
+    })
+  }
+}
+
+},{}],582:[function(require,module,exports){
 const eventType = require('../utilities/event-type')
 const geoImageTransformation = require('../utilities/geo-image-transformation')
 
@@ -59484,7 +59498,7 @@ function displayCurrentPositionMarker (g, geoCoord) {
     `translate(${imageDisplayCoord.x}px, ${imageDisplayCoord.y}px)`
 }
 
-},{"../utilities/event-type":587,"../utilities/geo-image-transformation":588}],582:[function(require,module,exports){
+},{"../utilities/event-type":588,"../utilities/geo-image-transformation":589}],583:[function(require,module,exports){
 const eventType = require('../utilities/event-type')
 
 module.exports = {
@@ -59528,7 +59542,7 @@ function createImageElement (imageDataUrl) {
   })
 }
 
-},{"../utilities/event-type":587}],583:[function(require,module,exports){
+},{"../utilities/event-type":588}],584:[function(require,module,exports){
 const eventType = require('../utilities/event-type')
 const geoImageTransformation = require('../utilities/geo-image-transformation')
 const interactionEventHelper = require('../utilities/interaction-event-helper')
@@ -59826,7 +59840,7 @@ function applyTransform (g) {
   applyPositionMarkerTransform()
 }
 
-},{"../utilities/event-type":587,"../utilities/geo-image-transformation":588,"../utilities/interaction-event-helper":589}],584:[function(require,module,exports){
+},{"../utilities/event-type":588,"../utilities/geo-image-transformation":589,"../utilities/interaction-event-helper":590}],585:[function(require,module,exports){
 const interactionEventHelper = require('../utilities/interaction-event-helper')
 
 module.exports = {
@@ -59918,7 +59932,7 @@ function stopAddingPin (g, pinAddingState) {
   g.doms.addPinButton.style.backgroundColor = 'var(--lod-bg-color)'
 }
 
-},{"../utilities/interaction-event-helper":589}],585:[function(require,module,exports){
+},{"../utilities/interaction-event-helper":590}],586:[function(require,module,exports){
 const eventType = require('../utilities/event-type')
 
 module.exports = {
@@ -59948,7 +59962,7 @@ module.exports = {
   }
 }
 
-},{"../utilities/event-type":587}],586:[function(require,module,exports){
+},{"../utilities/event-type":588}],587:[function(require,module,exports){
 const eventType = require('../utilities/event-type')
 
 module.exports = {
@@ -59960,22 +59974,20 @@ module.exports = {
   data: {},
 
   init (g) {
-    g.doms.navigationView.style.display = 'none'
-
     g.eventBus.addEventListener(eventType.FILE_LOADED, () => {
-      g.doms.fileSelectionView.style.display = 'none'
-      g.doms.navigationView.style.display = 'block'
+      g.doms.fileSelectionView.hidden = true
+      g.doms.navigationView.hidden = false
     }, { once: true })
   }
 }
 
-},{"../utilities/event-type":587}],587:[function(require,module,exports){
+},{"../utilities/event-type":588}],588:[function(require,module,exports){
 module.exports = {
   FILE_LOADED: 'fileLoaded',
   POSITION_UPDATED: 'positionUpdated'
 }
 
-},{}],588:[function(require,module,exports){
+},{}],589:[function(require,module,exports){
 const math = require('mathjs')
 
 function buildTransformation (samples) {
@@ -60020,7 +60032,7 @@ module.exports = {
   buildTransformation
 }
 
-},{"mathjs":6}],589:[function(require,module,exports){
+},{"mathjs":6}],590:[function(require,module,exports){
 function getMousePosition (event) {
   return {
     x: event.clientX,
