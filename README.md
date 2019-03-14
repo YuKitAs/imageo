@@ -16,11 +16,11 @@ Load an image, mark several points on the image with the current device position
 * Users should be able to manually select a point on the image and assign its geographic coordinate.
 
 ### UX Related
-* Notify user when tab is going to be closed.
 * Notify user when pin is going to be removed.
 * Double tip to zoom.
 * After scaled the image with 2 fingers, then release 1 finger, at that moment, user cannot translate image with the 1 finger still on the screen.
 * Store added points, so that the users don't need browser running all the time.
+* ~~Notify user when tab is going to be closed.~~
 
 ### Usability Related
 * Safari on iOS is not supported. Android WebView is not tested. But we should do so because later on we may use cordova to build an App.
