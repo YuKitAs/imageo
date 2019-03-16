@@ -59520,7 +59520,7 @@ function upsertPositionMarkerElement (g, imageDisplayCoord) {
 }
 
 function updatePositionMarkerImage (g, geoCoord) {
-  const MOVING_THRESHOLD = 0.000001
+  const MOVING_THRESHOLD = 0.0000005
 
   const positionHistory = g.data.positionHistory.getValue()
   if (positionHistory.length < 1) {
