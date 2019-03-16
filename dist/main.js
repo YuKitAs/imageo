@@ -59524,17 +59524,17 @@ function updatePositionMarkerImage (g, geoCoord) {
 
   const positionHistory = g.data.positionHistory.getValue()
   if (positionHistory.length < 1) {
-    return switchMarkerImage(g, 'still')
+    return switchMarkerImage('still')
   }
 
   const lastPosition = positionHistory[positionHistory.length - 1]
   if (geoCoord.lat - lastPosition.lat <= MOVING_THRESHOLD &&
     geoCoord.long - lastPosition.long <= MOVING_THRESHOLD) {
-    switchMarkerImage(g, 'still')
+    switchMarkerImage('still')
   } else if (geoCoord.long - lastPosition.long >= 0) {
-    switchMarkerImage(g, 'go-right')
+    switchMarkerImage('go-right')
   } else if (geoCoord.long - lastPosition.long < 0) {
-    switchMarkerImage(g, 'go-left')
+    switchMarkerImage('go-left')
   }
 }
 
