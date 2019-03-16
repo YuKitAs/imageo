@@ -59448,10 +59448,7 @@ module.exports = {
   doms: {
     currentPositionText: '#navigation-current-position-text',
     markerLayer: '#navigation-marker-layer',
-    positionMarkerTemplate: '#navigation-position-marker-template',
-    positionMarkerStill: '#navigation-position-marker-still',
-    positionMarkerGoLeft: '#navigation-position-marker-go-left',
-    positionMarkerGoRight: '#navigation-position-marker-go-right'
+    positionMarkerTemplate: '#navigation-position-marker-template'
   },
 
   data: {
@@ -59507,6 +59504,14 @@ function upsertPositionMarkerElement (g, imageDisplayCoord) {
   if (!positionMarkerElement) {
     positionMarkerElement = g.doms.positionMarkerTemplate.cloneNode(true)
     positionMarkerElement.id = 'navigation-position-marker'
+
+    positionMarkerElement.querySelector('#navigation-position-marker-still-template').id =
+      'navigation-position-marker-still'
+    positionMarkerElement.querySelector('#navigation-position-marker-go-left-template').id =
+      'navigation-position-marker-go-left'
+    positionMarkerElement.querySelector('#navigation-position-marker-go-right-template').id =
+      'navigation-position-marker-go-right'
+
     g.doms.markerLayer.appendChild(positionMarkerElement)
   }
 
@@ -59531,21 +59536,25 @@ function updatePositionMarkerImage (g, geoCoord) {
 }
 
 function switchMarkerImage (g, name) {
+  const positionMarkerStill = document.getElementById('navigation-position-marker-still')
+  const positionMarkerGoLeft = document.getElementById('navigation-position-marker-go-left')
+  const positionMarkerGoRight = document.getElementById('navigation-position-marker-go-right')
+
   switch (name) {
     case 'still':
-      g.doms.positionMarkerStill.hidden = false
-      g.doms.positionMarkerGoLeft.hidden = true
-      g.doms.positionMarkerGoRight.hidden = true
+      positionMarkerStill.hidden = false
+      positionMarkerGoLeft.hidden = true
+      positionMarkerGoRight.hidden = true
       break
     case 'go-left':
-      g.doms.positionMarkerStill.hidden = true
-      g.doms.positionMarkerGoLeft.hidden = false
-      g.doms.positionMarkerGoRight.hidden = true
+      positionMarkerStill.hidden = true
+      positionMarkerGoLeft.hidden = false
+      positionMarkerGoRight.hidden = true
       break
     case 'go-right':
-      g.doms.positionMarkerStill.hidden = true
-      g.doms.positionMarkerGoLeft.hidden = true
-      g.doms.positionMarkerGoRight.hidden = false
+      positionMarkerStill.hidden = true
+      positionMarkerGoLeft.hidden = true
+      positionMarkerGoRight.hidden = false
       break
   }
 }
