@@ -16,6 +16,8 @@ const globalData = {
     long: 0
   },
 
+  positionHistory: [],
+
   viewport: {
     width: 0,
     height: 0

@@ -5,7 +5,8 @@ rm -rf build
 mkdir dist
 
 cp src/html/*.html dist
-cp img/*.png img/*.gif dist
+cp src/img/*.gif dist
+
 npx postcss --use autoprefixer --base src/css --dir dist src/css/**/*.css
 
 mkdir build

@@ -4,12 +4,20 @@ module.exports = {
   doms: {},
 
   data: {
-    currentPosition: { mutable: true }
+    currentPosition: { mutable: true },
+    positionHistory: { mutable: true }
   },
 
   init (g) {
     const options = { enableHighAccuracy: true, timeout: 10000, maximumAge: 5000 }
     navigator.geolocation.watchPosition(position => {
+      const positionHistory = g.data.positionHistory.getValue()
+      positionHistory.push(g.data.currentPosition.getValue())
+      if (positionHistory.length >= 10) {
+        positionHistory.shift()
+      }
+      g.data.positionHistory.setValue(positionHistory)
+
       const currentPosition = {
         lat: position.coords.latitude,
         long: position.coords.longitude
