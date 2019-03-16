@@ -1,6 +1,20 @@
 # Imageo
 Use an image as the map for navigation.
 
+## Local Development
+
+### Install Dependencies
+```console
+$ npm install
+$ npm install -g http-server
+```
+
+### Build Artifact and Run Local Server
+```console
+$ npm run build
+$ http-server dist
+```
+
 ## Concept
 Load an image, mark several points on the image with the current device position. With 2 of such points, it will be able to show the current position on the image. In the future version, with more than 2 points, the accuracy of the current position displaying will be increased.
 
@@ -31,12 +45,3 @@ Load an image, mark several points on the image with the current device position
 * __image transformation__: translating and scaling of the image according to user interactions;
 * __geo-image transformation__: the transformation between geographic coordinate system and image coordinate system;
 * __navigation__: the concept including using an image as a map, retrieving current position, calculate geo-image transformation, and displaying the current position;
-
-## Local Development
-
-```console
-$ npm install
-$ sudo npm install -g http-server
-$ npm run build
-$ http-server dist
-```
