@@ -31,3 +31,12 @@ Load an image, mark several points on the image with the current device position
 * __image transformation__: translating and scaling of the image according to user interactions;
 * __geo-image transformation__: the transformation between geographic coordinate system and image coordinate system;
 * __navigation__: the concept including using an image as a map, retrieving current position, calculate geo-image transformation, and displaying the current position;
+
+## Local Development
+
+```console
+$ npm install
+$ sudo npm install -g http-server
+$ npm run build
+$ http-server dist
+```

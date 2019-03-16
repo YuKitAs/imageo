@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/xiGUAwanOU/imageo.git"
+    "url": "git+https://github.com/YuKitAs/imageo.git"
   },
   "author": "xiGUAwanOU",
   "license": "BSD-2-Clause",
   "bugs": {
-    "url": "https://github.com/xiGUAwanOU/imageo/issues"
+    "url": "https://github.com/YuKitAs/imageo/issues"
   },
-  "homepage": "https://xiguawanou.github.io/imageo/dist/index.html",
+  "homepage": "https://yukitas.github.io/imageo/dist/index.html",
   "devDependencies": {
     "autoprefixer": "^9.4.9",
     "browserify": "^16.2.3",
