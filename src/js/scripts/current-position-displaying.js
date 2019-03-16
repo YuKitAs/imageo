@@ -77,13 +77,16 @@ function upsertPositionMarkerElement (g, imageDisplayCoord) {
 }
 
 function updatePositionMarkerImage (g, geoCoord) {
+  const MOVING_THRESHOLD = 0.000001
+
   const positionHistory = g.data.positionHistory.getValue()
   if (positionHistory.length < 1) {
     return switchMarkerImage(g, 'still')
   }
 
   const lastPosition = positionHistory[positionHistory.length - 1]
-  if (geoCoord.lat - lastPosition.lat <= 0.00001 && geoCoord.long - lastPosition.long <= 0.00001) {
+  if (geoCoord.lat - lastPosition.lat <= MOVING_THRESHOLD &&
+    geoCoord.long - lastPosition.long <= MOVING_THRESHOLD) {
     switchMarkerImage(g, 'still')
   } else if (geoCoord.long - lastPosition.long >= 0) {
     switchMarkerImage(g, 'go-right')
